@@ -2,10 +2,10 @@
 name = "rigs"
 version = "0.1.0"
 edition = "2021"
-authors = ["Michael <michael@airplate.dk>"]
+authors = ["Michael <kvik098@icloud.com>"]
 description = "Rate-limit-aware multi-agent LLM orchestration system"
 license = "MIT"
-repository = "https://github.com/yourusername/rigs"
+repository = "https://github.com/Fnux8890/rigs"
 readme = "README.md"
 keywords = ["llm", "ai", "orchestration", "rate-limiting", "multi-agent"]
 categories = ["command-line-utilities", "development-tools"]
