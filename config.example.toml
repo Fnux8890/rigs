@@ -1,0 +1,141 @@
+# Rigs Configuration
+# Copy this file to ~/.rigs/config.toml and customize
+
+[general]
+# Workspace directory (default: ~/.rigs)
+workspace = "~/.rigs"
+# Log level: error, warn, info, debug, trace
+log_level = "info"
+
+# ============================================================
+# Provider Configuration
+# ============================================================
+
+[providers.claude]
+# Enable Claude (via Claude Code CLI)
+enabled = true
+# Default model
+model = "claude-sonnet-4-20250514"
+# Threshold for yellow health (0.0 - 1.0)
+threshold_yellow = 0.5
+# Threshold for red health (0.0 - 1.0)  
+threshold_red = 0.2
+# Fallback model when main model unavailable
+fallback_model = "claude-haiku-4-20250514"
+
+[providers.codex]
+# Enable Codex (via Codex CLI)
+enabled = true
+model = "codex"
+threshold_yellow = 0.4
+threshold_red = 0.15
+
+[providers.gemini]
+# Enable Gemini (via API)
+enabled = true
+model = "gemini-2.5-pro"
+threshold_yellow = 0.3
+threshold_red = 0.1
+fallback_model = "gemini-2.5-flash"
+# Environment variable containing API key
+api_key_env = "GEMINI_API_KEY"
+
+[providers.deepseek]
+# Enable DeepSeek (for Assayer - very cheap!)
+enabled = true
+model = "deepseek-chat"
+api_key_env = "DEEPSEEK_API_KEY"
+
+[providers.ollama]
+# Enable Ollama (local LLMs - FREE!)
+enabled = true
+# Base URL for Ollama
+base_url = "http://localhost:11434"
+# Default model
+model = "deepseek-r1:7b"
+fallback_model = "llama3.2:3b"
+
+# ============================================================
+# Assayer Configuration (Prompt Optimization)
+# ============================================================
+
+[assayer]
+# Use Ollama for assayer (FREE) or DeepSeek API (cheap)
+use_ollama = true
+
+# Models for each assayer component
+# Planner: Decomposes goals into beads
+planner_model = "deepseek-r1:7b"
+# Optimizer: Refines prompts for clarity
+optimizer_model = "qwen3:8b"
+# Estimator: Predicts token usage
+estimator_model = "llama3.2:3b"
+# Quality Gate: Reviews outputs
+quality_model = "llama3.2:3b"
+
+# Fallback to DeepSeek API if Ollama unavailable
+fallback_to_api = true
+
+# ============================================================
+# Routing Configuration
+# ============================================================
+
+[routing]
+# Strategy for handling rate limits:
+# - conservative: Defer early, preserve capacity
+# - balanced: Default, good mix
+# - aggressive: Use capacity fully, defer only when empty
+strategy = "balanced"
+
+# Task type to provider affinity (1.0 = best match)
+[routing.affinity.implementation]
+claude = 1.0
+codex = 0.7
+gemini = 0.5
+
+[routing.affinity.review]
+codex = 1.0
+claude = 0.8
+gemini = 0.5
+
+[routing.affinity.research]
+gemini = 1.0
+claude = 0.6
+codex = 0.4
+
+[routing.affinity.refactor]
+claude = 1.0
+codex = 0.8
+gemini = 0.4
+
+[routing.affinity.test]
+codex = 1.0
+claude = 0.7
+gemini = 0.4
+
+[routing.affinity.documentation]
+claude = 1.0
+gemini = 0.7
+codex = 0.5
+
+# ============================================================
+# Foreman Configuration
+# ============================================================
+
+[foreman]
+# How often to check for work (seconds)
+poll_interval = 5
+# Maximum concurrent beads
+max_concurrent = 1
+# Auto-start on boot
+auto_start = false
+
+# ============================================================
+# Database Configuration
+# ============================================================
+
+[database]
+# Path to SQLite database
+path = "~/.rigs/db/rigs.db"
+# Enable WAL mode for better concurrency
+wal_mode = true

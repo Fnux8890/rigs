@@ -1,0 +1,67 @@
+[package]
+name = "rigs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Michael <michael@airplate.dk>"]
+description = "Rate-limit-aware multi-agent LLM orchestration system"
+license = "MIT"
+repository = "https://github.com/yourusername/rigs"
+readme = "README.md"
+keywords = ["llm", "ai", "orchestration", "rate-limiting", "multi-agent"]
+categories = ["command-line-utilities", "development-tools"]
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.47", features = ["full"] }
+
+# CLI
+clap = { version = "4.5", features = ["derive", "color", "env"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Database
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "migrate"] }
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Utilities
+uuid = { version = "1.0", features = ["v4", "serde"] }
+async-trait = "0.1"
+reqwest = { version = "0.12", features = ["json"] }
+directories = "5.0"
+rand = "0.8"
+
+# Optional: TUI
+ratatui = { version = "0.29", optional = true }
+crossterm = { version = "0.28", optional = true }
+
+[features]
+default = []
+tui = ["ratatui", "crossterm"]
+
+[dev-dependencies]
+tempfile = "3.14"
+tokio-test = "0.4"
+pretty_assertions = "1.4"
+
+[[bin]]
+name = "rigs"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
