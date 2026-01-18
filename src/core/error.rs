@@ -76,6 +76,9 @@ pub enum RigsError {
     #[error("Database error: {0}")]
     DatabaseError(#[from] sqlx::Error),
 
+    #[error("Migration error: {0}")]
+    MigrationError(#[from] sqlx::migrate::MigrateError),
+
     // IO errors
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),

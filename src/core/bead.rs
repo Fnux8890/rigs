@@ -215,7 +215,7 @@ impl fmt::Display for Priority {
 }
 
 /// Status of a bead in the pipeline
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, clap::ValueEnum)]
 #[serde(rename_all = "lowercase")]
 pub enum BeadStatus {
     /// Waiting in queue, not yet processed
