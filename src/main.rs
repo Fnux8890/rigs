@@ -3,10 +3,12 @@ use std::path::PathBuf;
 use tracing::info;
 
 mod cli;
+mod config;
 mod core;
 mod db;
 
 use crate::cli::{bead, convoy, foreman, goal, provider, tank};
+use crate::config::Config;
 use crate::core::error::Result;
 
 #[derive(Parser)]
@@ -87,10 +89,23 @@ enum Commands {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    // Initialize logging
-    init_logging(cli.verbose);
+    // Load configuration
+    let config = Config::load(cli.config.as_deref())?;
+
+    // Initialize logging (CLI verbosity overrides config)
+    let log_level = if cli.verbose > 0 {
+        match cli.verbose {
+            1 => "info",
+            2 => "debug",
+            _ => "trace",
+        }
+    } else {
+        &config.general.log_level
+    };
+    init_logging(log_level);
 
     info!("Rigs v{} starting", env!("CARGO_PKG_VERSION"));
+    info!("Workspace: {}", config.workspace_dir().display());
 
     match cli.command {
         Commands::Init { path, git } => {
@@ -122,14 +137,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn init_logging(verbosity: u8) {
-    let level = match verbosity {
-        0 => "warn",
-        1 => "info",
-        2 => "debug",
-        _ => "trace",
-    };
-
+fn init_logging(level: &str) {
     let filter = format!("rigs={},sqlx=warn", level);
 
     tracing_subscriber::fmt()
